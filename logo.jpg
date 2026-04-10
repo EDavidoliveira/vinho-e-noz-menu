@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vinho e Noz — Carta de Bebidas</title>
+  <style>
+    :root {
+      --bg: #f3efe7;
+      --paper: #fbf8f1;
+      --green: #5f8f73;
+      --text: #2f2a24;
+      --muted: #746a5d;
+      --line: #ddd4c6;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      min-height: 100vh;
+      padding: 24px 18px 110px;
+      background:
+        linear-gradient(to right, var(--green) 0, var(--green) 18px, transparent 18px, transparent calc(100% - 18px), var(--green) calc(100% - 18px), var(--green) 100%);
+    }
+
+    .panel {
+      background: rgba(251, 248, 241, 0.96);
+      min-height: calc(100vh - 48px);
+      padding: 28px 22px 90px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+    }
+
+    h1, h2 {
+      margin: 0 0 18px;
+      line-height: 1.15;
+    }
+
+    h1 {
+      font-size: 34px;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: var(--muted);
+      margin-bottom: 28px;
+      font-size: 15px;
+    }
+
+    .card, .list-item, .back-btn {
+      border: 1px solid var(--line);
+      background: #fffdf8;
+      border-radius: 16px;
+    }
+
+    .categories {
+      display: grid;
+      gap: 12px;
+    }
+
+    .card {
+      padding: 16px 18px;
+      cursor: pointer;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+
+    .card:hover, .list-item:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .card-sub {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .back-btn {
+      display: inline-block;
+      padding: 10px 14px;
+      cursor: pointer;
+      margin-bottom: 18px;
+      font-size: 15px;
+    }
+
+    .list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .list-item {
+      padding: 14px 16px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .list-left {
+      min-width: 0;
+    }
+
+    .wine-name {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .wine-origin {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .wine-price {
+      font-size: 18px;
+      font-weight: 700;
+      white-space: nowrap;
+      color: var(--text);
+    }
+
+    .detail {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #fffdf8;
+      padding: 22px 18px;
+    }
+
+    .detail h2 {
+      font-size: 28px;
+    }
+
+    .detail-row {
+      margin: 12px 0;
+      font-size: 17px;
+    }
+
+    .detail-label {
+      font-weight: 700;
+    }
+
+    .note {
+      margin-top: 16px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #f6f1e7;
+      color: #5f564b;
+      font-size: 14px;
+    }
+
+    .logo-footer {
+      position: fixed;
+      left: 50%;
+      bottom: 10px;
+      transform: translateX(-50%);
+      text-align: center;
+      width: 100%;
+      pointer-events: none;
+    }
+
+    .logo-footer img {
+      max-height: 72px;
+      width: auto;
+      opacity: 0.95;
+    }
+
+    .small {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 520px) {
+      .wrap {
+        padding: 10px 8px 100px;
+      }
+
+      .panel {
+        padding: 20px 14px 85px;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+
+      .wine-name {
+        font-size: 16px;
+      }
+
+      .wine-price {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="panel">
+      <div id="app"></div>
+    </div>
+  </div>
+
+  <div class="logo-footer">
+    <img src="logo.jpg" alt="Vinho e Noz">
+  </div>
+
+  <script>
+    const data = {
+      categories: [
+        {
+          id: "tintos",
+          nome: "Vinhos Tintos",
+          items: [
+            { nome: "Pêra Manca", origem: "Fundação Eugénio de Almeida", preco: "550€" },
+            { nome: "Mil Reis Grande Reserva", origem: "Maroteira", preco: "500€" },
+            { nome: "Mouchão Tonel 3-4", origem: "Mouchão", preco: "360€" },
+            { nome: "Tapada do Chaves Vinhas Velhas", origem: "Tapada do Chaves", preco: "240€" },
+            { nome: "Garrafeira", origem: "Herdade das Servas", preco: "155€" },
+            { nome: "Dez Tostões Grande Reserva", origem: "Maroteira", preco: "95€" },
+            { nome: "Conde de Monsaraz Grande Reserva", origem: "Carmim", preco: "95€" },
+            { nome: "Mouchão", origem: "Mouchão", preco: "95€" },
+            { nome: "Quinta do Carmo Reserva", origem: "Quinta do Carmo", preco: "85€" },
+            { nome: "Cem Reis Reserva", origem: "Maroteira", preco: "80€" },
+            { nome: "Tapada do Chaves", origem: "Tapada do Chaves", preco: "70€" },
+            { nome: "Garrafeira dos Sócios", origem: "Carmim", preco: "65€" },
+            { nome: "Quetzal", origem: "Quinta do Quetzal", preco: "62€" },
+            { nome: "Cartuxa", origem: "Fundação Eugénio de Almeida", preco: "55€" },
+            { nome: "Comenda Grande Reserva", origem: "Comenda Grande", preco: "50€" },
+            { nome: "Esporão Reserva", origem: "Adega do Esporão", preco: "49€" },
+            { nome: "Herdade das Servas Reserva", origem: "Herdade das Servas", preco: "49€" },
+            { nome: "Freixo Reserva", origem: "Adega do Freixo", preco: "44€" },
+            { nome: "Folha do Meio Reserva", origem: "Mingorra", preco: "40€" },
+            { nome: "Casa dos Zagalos", origem: "Quinta do Mouro", preco: "38€" },
+            { nome: "Altas Quintas Colheita", origem: "Altas Quintas", preco: "38€" },
+            { nome: "Foral de Évora", origem: "Fundação Eugénio de Almeida", preco: "35€" },
+            { nome: "Mingorra Reserva", origem: "Mingorra", preco: "35€" },
+            { nome: "Vinhas Velhas", origem: "João Portugal Ramos", preco: "30€" },
+            { nome: "Monte da Peceguina", origem: "Herdade da Malhadinha Nova", preco: "29€" },
+            { nome: "Herdade do Sobroso", origem: "Vidigueira", preco: "29€" },
+            { nome: "Borba Reserva", origem: "Adega de Borba", preco: "28€" },
+            { nome: "Herdade Fonte da Coberta Reserva", origem: "Herdade Fonte da Coberta", preco: "26€" },
+            { nome: "Dona Maria", origem: "Quinta do Carmo", preco: "23€" },
+            { nome: "Comenda Grande", origem: "Comenda Grande", preco: "22€" },
+            { nome: "Dissidente Reserva", origem: "Carmim", preco: "21€" }
+          ]
+        },
+        {
+          id: "tintos-0375",
+          nome: "Vinhos Tintos 0.375",
+          items: []
+        },
+        {
+          id: "tintos-edicao-limitada",
+          nome: "Vinhos Tintos Edição Limitada",
+          items: [
+            { nome: "Estremus 2017", origem: "Medalha de Ouro", preco: "250€" },
+            { nome: "Pai Horácio Edição Especial", origem: "Pai Horácio", preco: "220€" },
+            { nome: "Pai Horácio Grande Reserva Douro", origem: "Douro", preco: "95€" },
+            { nome: "Avô Escrivão Reserva Douro", origem: "Douro", preco: "85€" },
+            { nome: "Insuspeito Grande Reserva Douro", origem: "Douro", preco: "80€" },
+            { nome: "Bellus Grande Escolha A. B.", origem: "Vinho Natural", preco: "Preço a confirmar" },
+            { nome: "Vinhas da Ira", origem: "Mingorra", preco: "Preço a confirmar" }
+          ]
+        },
+        {
+          id: "brancos",
+          nome: "Vinhos Brancos",
+          items: []
+        },
+        {
+          id: "brancos-0375",
+          nome: "Vinhos Brancos 0.375",
+          items: []
+        },
+        {
+          id: "espumantes",
+          nome: "Vinhos Espumantes / Champanhe",
+          items: [
+            { nome: "Moët Chandon Bruto", origem: "Champanhe", preco: "98€" },
+            { nome: "Murganheira Vintage", origem: "Medalha de Ouro", preco: "70€" },
+            { nome: "Mingorra Bruto", origem: "Mingorra", preco: "35€" },
+            { nome: "Raposeira Blanc de Blancs", origem: "Malvasia Fina", preco: "28€" }
+          ]
+        },
+        {
+          id: "licorosos",
+          nome: "Vinhos Licorosos",
+          items: [
+            { nome: "Vinho Fortificado", origem: "Licoroso", preco: "Preço a confirmar" },
+            { nome: "Vinho Colheita Tardia", origem: "Licoroso", preco: "Preço a confirmar" },
+            { nome: "Moscatel Graúdo", origem: "Alentejo", preco: "Preço a confirmar" },
+            { nome: "Vinho do Porto 10 anos", origem: "Porto", preco: "Preço a confirmar" }
+          ]
+        },
+        {
+          id: "destilados",
+          nome: "Destilados",
+          items: [
+            { nome: "Whisky novo", origem: "Destilado", preco: "Preço a confirmar" },
+            { nome: "Whisky velho", origem: "Destilado", preco: "Preço a confirmar" },
+            { nome: "Aguardente nova", origem: "Destilado", preco: "6€" },
+            { nome: "Aguardente velha", origem: "Destilado", preco: "Preço a confirmar" },
+            { nome: "Aguardente Velhíssima", origem: "Destilado", preco: "Preço a confirmar" }
+          ],
+          nota: "Nas fotos aparecem dois conjuntos de preços diferentes para alguns destilados."
+        },
+        {
+          id: "outras-bebidas",
+          nome: "Outras Bebidas",
+          items: [
+            { nome: "Café / Descafeinado", origem: "Bebidas quentes", preco: "1,20€" },
+            { nome: "Chá (chávena)", origem: "Bebidas quentes", preco: "1,20€" },
+            { nome: "Chá (bule)", origem: "Bebidas quentes", preco: "2,50€" },
+            { nome: "Água garrafa 700ml", origem: "Água", preco: "2,50€" },
+            { nome: "Água com gás 700ml", origem: "Água", preco: "3€" },
+            { nome: "Sagres Zero 330ml", origem: "Cerveja", preco: "3€" },
+            { nome: "Imperial 20cl", origem: "Cerveja", preco: "3€" },
+            { nome: "Imperial 40cl", origem: "Cerveja", preco: "Preço a confirmar" },
+            { nome: "Imperial 50cl", origem: "Cerveja", preco: "6€" },
+            { nome: "Refrigerantes", origem: "Ice Tea, 7 Up, Coca-Cola", preco: "3€" }
+          ],
+          nota: "O preço da Imperial 40cl aparece diferente nas duas imagens."
+        }
+      ]
+    };
+
+    let screen = "categories";
+    let currentCategory = null;
+    let currentItem = null;
+
+    const app = document.getElementById("app");
+
+    function render() {
+      if (screen === "categories") {
+        app.innerHTML = `
+          <h1>Vinho e Noz</h1>
+          <div class="subtitle">Carta de bebidas</div>
+          <div class="categories">
+            ${data.categories.map(cat => `
+              <div class="card" onclick="openCategory('${cat.id}')">
+                <div class="card-title">${cat.nome}</div>
+                <div class="card-sub">${cat.items.length} itens</div>
+              </div>
+            `).join("")}
+          </div>
+        `;
+        return;
+      }
+
+      if (screen === "list" && currentCategory) {
+        app.innerHTML = `
+          <div class="back-btn" onclick="goBack()">← voltar</div>
+          <h2>${currentCategory.nome}</h2>
+          <div class="list">
+            ${currentCategory.items.length
+              ? currentCategory.items.map((item, i) => `
+                <div class="list-item" onclick="openItem(${i})">
+                  <div class="list-left">
+                    <div class="wine-name">${item.nome}</div>
+                    <div class="wine-origin">${item.origem}</div>
+                  </div>
+                  <div class="wine-price">${item.preco}</div>
+                </div>
+              `).join("")
+              : `<div class="note">Esta categoria ainda não foi preenchida.</div>`
+            }
+          </div>
+          ${currentCategory.nota ? `<div class="note">${currentCategory.nota}</div>` : ""}
+        `;
+        return;
+      }
+
+      if (screen === "detail" && currentItem) {
+        app.innerHTML = `
+          <div class="back-btn" onclick="goBack()">← voltar</div>
+          <div class="detail">
+            <h2>${currentItem.nome}</h2>
+            <div class="detail-row"><span class="detail-label">Origem:</span> ${currentItem.origem}</div>
+            <div class="detail-row"><span class="detail-label">Preço:</span> ${currentItem.preco}</div>
+          </div>
+          <div class="note small">Detalhe simples da carta digital. Depois podemos acrescentar castas, notas de prova e harmonização.</div>
+        `;
+      }
+    }
+
+    function openCategory(id) {
+      currentCategory = data.categories.find(c => c.id === id);
+      currentItem = null;
+      screen = "list";
+      render();
+    }
+
+    function openItem(index) {
+      currentItem = currentCategory.items[index];
+      screen = "detail";
+      render();
+    }
+
+    function goBack() {
+      if (screen === "detail") {
+        screen = "list";
+      } else {
+        screen = "categories";
+      }
+      render();
+    }
+
+    render();
+  </script>
+</body>
+</html>
