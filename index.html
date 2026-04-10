@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vinho e Noz</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: #f5f2ea;
+  margin: 0;
+  padding: 20px;
+}
+
+h1 { font-size: 22px; }
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+}
+
+button {
+  margin-bottom: 15px;
+}
+
+.logo {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 70px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="app"></div>
+
+<img src="https://i.imgur.com/placeholder.png" class="logo">
+
+<script>
+const vinhos = [
+  { nome: "Cartuxa Reserva", regiao: "Alentejo", preco: "55€", detalhe: "Elegante e complexo." },
+  { nome: "Pêra Manca", regiao: "Alentejo", preco: "120€", detalhe: "Vinho icónico." }
+];
+
+const app = document.getElementById("app");
+
+function lista() {
+  app.innerHTML = "<h1>Vinhos Tintos</h1>";
+
+  vinhos.forEach((v, i) => {
+    const div = document.createElement("div");
+    div.className = "item";
+
+    div.innerHTML = `
+      <span>${v.nome} (${v.regiao})</span>
+      <span>${v.preco}</span>
+    `;
+
+    div.onclick = () => detalhe(i);
+
+    app.appendChild(div);
+  });
+}
+
+function detalhe(i) {
+  const v = vinhos[i];
+
+  app.innerHTML = `
+    <button onclick="lista()">← voltar</button>
+    <h1>${v.nome}</h1>
+    <p><b>Origem:</b> ${v.regiao}</p>
+    <p><b>Preço:</b> ${v.preco}</p>
+    <p>${v.detalhe}</p>
+  `;
+}
+
+lista();
+</script>
+
+</body>
+</html>
